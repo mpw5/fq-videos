@@ -4,7 +4,7 @@ const router = express.Router();
 const {
   WebClient
 } = require('@slack/web-api');
-const bot_token = process.env.SLACK_API_TOKEN
+
 const user_token = process.env.SLACK_API_USER_TOKEN
 const web = new WebClient(user_token);
 

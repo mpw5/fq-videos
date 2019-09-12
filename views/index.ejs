@@ -23,7 +23,6 @@
       <tr>
         <th>Date</th>
         <th>User</th>
-        <th>Title</th>
         <th>Video</th>
       </tr>
     </thead>
@@ -32,8 +31,7 @@
       <tr>
         <td><%= moment(results[i].date).format('MMMM Do YYYY, HH:mm:ss') %></td>
         <td><%= results[i].username %></td>
-        <td><%- `<a href= ${results[i].title_link}>${results[i].title}</a>` %></td>
-        <td><%- results[i].video_html %></td>
+        <td align="center"><%- `<a href= ${results[i].title_link}>${results[i].title}</a><br>` + results[i].video_html %></td>
       </tr>
       <% } %>
     </tbody>
