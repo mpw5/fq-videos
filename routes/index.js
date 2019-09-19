@@ -95,7 +95,11 @@ async function get_results() {
 }
 
 router.get('/', (req, res) => {
+<<<<<<< HEAD
   if(typeof(sorted_results)){
+=======
+  if(typeof(sorted_results) == 'undefined'){
+>>>>>>> a09c9b1... add scheduler for api calls
     res.render('error');
   } else {
     res.render('index', {
@@ -106,7 +110,11 @@ router.get('/', (req, res) => {
 
 var schedule = require('node-schedule');
 
+<<<<<<< HEAD
 schedule.scheduleJob('*/5 * * * *', function(){
+=======
+schedule.scheduleJob('*/2 * * * *', function(){
+>>>>>>> a09c9b1... add scheduler for api calls
   get_results()
 });
 
