@@ -40,29 +40,43 @@ router.get('/', (req, res) => {
     var results = [];
 
     for (const host of video_hosting_array) {
+
       response = await web.search.messages({
-        query: host + ' in:#friday-question'
+        query: host + ' in:#friday-question',
+        count: 1
       });
 
-      for (const result of response['messages']['matches']) {
-        for (const attachment of result['attachments']) {
-          var video_html;
+      console.log(JSON.stringify(response))
 
-          if (attachment['service_name'] == 'YouTube' || attachment['service_name'] == 'Vimeo') {
-            video_html = attachment['video_html'];
-          } else {
-            video_html = attachment['audio_html']; //bandcamp
+      var total_pages = response['messages']['paging']['pages']
+      var page
+
+      for (page = 1; page <= total_pages; page++){
+        response = await web.search.messages({
+          query: host + ' in:#friday-question',
+          page: page
+        });
+
+        for (const result of response['messages']['matches']) {
+          for (const attachment of result['attachments']) {
+            var video_html;
+
+            if (attachment['service_name'] == 'YouTube' || attachment['service_name'] == 'Vimeo') {
+              video_html = attachment['video_html'];
+            } else {
+              video_html = attachment['audio_html']; //bandcamp
+            }
+
+            let video = {
+              "username": '@' + result['username'],
+              "date": new Date(result['ts'] * 1000),
+              "title": attachment['title'],
+              "title_link": attachment['title_link'],
+              "video_html": video_html.replace("autoplay=1", "autoplay=0&rel=0")
+            }
+
+            results = results.concat(video);
           }
-
-          let video = {
-            "username": '@' + result['username'],
-            "date": new Date(result['ts'] * 1000),
-            "title": attachment['title'],
-            "title_link": attachment['title_link'],
-            "video_html": video_html.replace("autoplay=1", "autoplay=0&rel=0")
-          }
-
-          results = results.concat(video);
         }
       }
     }
