@@ -59,7 +59,9 @@ router.get('/', (req, res) => {
         });
 
         for (const result of response['messages']['matches']) {
-          console.log(JSON.stringify(result))
+          console.log(result['attachments'])
+          console.log(JSON.stringify(result['attachments'])) 
+
           for (const attachment of result['attachments']) {
             var video_html;
 
@@ -76,9 +78,6 @@ router.get('/', (req, res) => {
               "title_link": attachment['title_link'],
               "video_html": video_html.replace("autoplay=1", "autoplay=0&rel=0")
             }
-
-            console.log(JSON.stringify(video))
-
             results = results.concat(video);
           }
         }
