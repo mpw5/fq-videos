@@ -32,43 +32,47 @@ function compareValues(key, order = 'asc') {
   };
 }
 
-router.get('/', (req, res) => {
-  (async () => {
-    const video_hosting_array = ['https://youtu', 'https://www.youtube', 'bandcamp.com', 'https://vimeo.com']
-    var initial_response;
-    var response;
-    var matches;
-    var results = [];
+async function get_results() {
+  console.log('in get_results')
+  const video_hosting_array = ['https://youtu', 'https://www.youtube', 'bandcamp.com', 'https://vimeo.com']
+  var initial_response;
+  var response;
+  var matches;
+  var results = [];
 
-    for (const host of video_hosting_array) {
+  for (const host of video_hosting_array) {
+    console.log('getting results for ', host)
+    initial_response = await web.search.messages({
+      query: host + ' in:#friday-question',
+      count: 100
+    });
 
-      initial_response = await web.search.messages({
+    var total_pages = initial_response['messages']['paging']['pages']
+    var page
+
+    console.log('total records: ', initial_response['messages']['total'])
+    console.log('total pages: ', total_pages)
+    for (page = 1; page <= total_pages; page++) {
+      console.log('processing page ', page)
+
+      response = await web.search.messages({
         query: host + ' in:#friday-question',
-        count: 1
+        page: page,
+        count: 100
       });
 
-      var total_pages = initial_response['messages']['paging']['pages']
-      var page
+      for (const result of response['messages']['matches']) {
+        if (typeof(result['attachments']) != 'undefined') {
+          for (const attachment of result['attachments']) {
+            var video_html;
 
-      for (page = 1; page <= total_pages; page++) {
-        console.log('processing page ', page)
+            if (attachment['service_name'] == 'YouTube' || attachment['service_name'] == 'Vimeo') {
+              video_html = attachment['video_html'];
+            } else {
+              video_html = attachment['audio_html']; //bandcamp
+            }
 
-        response = await web.search.messages({
-          query: host + ' in:#friday-question',
-          page: page
-        });
-
-        for (const result of response['messages']['matches']) {
-          if (typeof(result['attachments']) != 'undefined') {
-            for (const attachment of result['attachments']) {
-              var video_html;
-
-              if (attachment['service_name'] == 'YouTube' || attachment['service_name'] == 'Vimeo') {
-                video_html = attachment['video_html'];
-              } else {
-                video_html = attachment['audio_html']; //bandcamp
-              }
-
+            if (typeof(video_html) != 'undefined') {
               let video = {
                 "username": '@' + result['username'],
                 "date": new Date(result['ts'] * 1000),
@@ -83,13 +87,84 @@ router.get('/', (req, res) => {
         }
       }
     }
+  }
 
-    sorted_results = results.sort(compareValues('date'));
+  sorted_results = results.sort(compareValues('date'));
 
+  return sorted_results
+}
+
+router.get('/', (req, res) => {
+  (async () => {
+    results = await get_results()
     res.render('index', {
-      results: sorted_results
+      results: results
     })
   })();
 });
+
+// (async () => {
+//   const video_hosting_array = ['https://youtu', 'https://www.youtube', 'bandcamp.com', 'https://vimeo.com']
+//   var initial_response;
+//   var response;
+//   var matches;
+//   var results = [];
+//
+//   for (const host of video_hosting_array) {
+//
+//     initial_response = await web.search.messages({
+//       query: host + ' in:#friday-question',
+//       count: 100
+//     });
+//
+//     var total_pages = initial_response['messages']['paging']['pages']
+//     var page
+//
+//     console.log('total records: ', initial_response['messages']['total'])
+//     console.log('total pages: ', total_pages)
+//     for (page = 1; page <= total_pages; page++) {
+//       console.log('processing page ', page)
+//
+//       response = await web.search.messages({
+//         query: host + ' in:#friday-question',
+//         page: page,
+//         count: 100
+//       });
+//
+//       for (const result of response['messages']['matches']) {
+//         if (typeof(result['attachments']) != 'undefined') {
+//           for (const attachment of result['attachments']) {
+//             var video_html;
+//
+//             if (attachment['service_name'] == 'YouTube' || attachment['service_name'] == 'Vimeo') {
+//               video_html = attachment['video_html'];
+//             } else {
+//               video_html = attachment['audio_html']; //bandcamp
+//             }
+//
+//             if (typeof(video_html) != 'undefined') {
+//               let video = {
+//                 "username": '@' + result['username'],
+//                 "date": new Date(result['ts'] * 1000),
+//                 "title": attachment['title'],
+//                 "title_link": attachment['title_link'],
+//                 "video_html": video_html.replace("autoplay=1", "autoplay=0&rel=0")
+//               }
+//
+//               results = results.concat(video);
+//             }
+//           }
+//         }
+//       }
+//     }
+//   }
+//
+//   sorted_results = results.sort(compareValues('date'));
+//
+//   res.render('index', {
+//     results: sorted_results
+//   })
+// })();
+// });
 
 module.exports = router;
