@@ -8,9 +8,9 @@ const {
 const user_token = process.env.SLACK_API_USER_TOKEN
 const web = new WebClient(user_token);
 
-function compareValues(key, order='asc') {
+function compareValues(key, order = 'asc') {
   return function(a, b) {
-    if(!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
+    if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
       // property doesn't exist on either object
       return 0;
     }
@@ -50,7 +50,7 @@ router.get('/', (req, res) => {
       var total_pages = initial_response['messages']['paging']['pages']
       var page
 
-      for (page = 1; page <= total_pages; page++){
+      for (page = 1; page <= total_pages; page++) {
         console.log('processing page ', page)
 
         response = await web.search.messages({
@@ -59,26 +59,26 @@ router.get('/', (req, res) => {
         });
 
         for (const result of response['messages']['matches']) {
-          console.log(result['attachments'])
-          console.log(JSON.stringify(result['attachments'])) 
+          if (typeof(result['attachments']) != 'undefined') {
+            for (const attachment of result['attachments']) {
+              var video_html;
 
-          for (const attachment of result['attachments']) {
-            var video_html;
+              if (attachment['service_name'] == 'YouTube' || attachment['service_name'] == 'Vimeo') {
+                video_html = attachment['video_html'];
+              } else {
+                video_html = attachment['audio_html']; //bandcamp
+              }
 
-            if (attachment['service_name'] == 'YouTube' || attachment['service_name'] == 'Vimeo') {
-              video_html = attachment['video_html'];
-            } else {
-              video_html = attachment['audio_html']; //bandcamp
+              let video = {
+                "username": '@' + result['username'],
+                "date": new Date(result['ts'] * 1000),
+                "title": attachment['title'],
+                "title_link": attachment['title_link'],
+                "video_html": video_html.replace("autoplay=1", "autoplay=0&rel=0")
+              }
+
+              results = results.concat(video);
             }
-
-            let video = {
-              "username": '@' + result['username'],
-              "date": new Date(result['ts'] * 1000),
-              "title": attachment['title'],
-              "title_link": attachment['title_link'],
-              "video_html": video_html.replace("autoplay=1", "autoplay=0&rel=0")
-            }
-            results = results.concat(video);
           }
         }
       }
