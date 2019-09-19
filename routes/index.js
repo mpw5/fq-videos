@@ -52,7 +52,7 @@ router.get('/', (req, res) => {
 
       for (page = 1; page <= total_pages; page++){
         console.log('processing page ', page)
-        
+
         response = await web.search.messages({
           query: host + ' in:#friday-question',
           page: page
@@ -76,6 +76,8 @@ router.get('/', (req, res) => {
               "title_link": attachment['title_link'],
               "video_html": video_html.replace("autoplay=1", "autoplay=0&rel=0")
             }
+
+            console.log(JSON.stringify(video))
 
             results = results.concat(video);
           }
