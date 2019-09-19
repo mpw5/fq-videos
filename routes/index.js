@@ -8,9 +8,9 @@ const {
 const user_token = process.env.SLACK_API_USER_TOKEN
 const web = new WebClient(user_token);
 
-function compareValues(key, order='asc') {
+function compareValues(key, order = 'asc') {
   return function(a, b) {
-    if(!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
+    if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
       // property doesn't exist on either object
       return 0;
     }
@@ -35,34 +35,51 @@ function compareValues(key, order='asc') {
 router.get('/', (req, res) => {
   (async () => {
     const video_hosting_array = ['https://youtu', 'https://www.youtube', 'bandcamp.com', 'https://vimeo.com']
+    var initial_response;
     var response;
     var matches;
     var results = [];
 
     for (const host of video_hosting_array) {
-      response = await web.search.messages({
-        query: host + ' in:#friday-question'
+
+      initial_response = await web.search.messages({
+        query: host + ' in:#friday-question',
+        count: 1
       });
 
-      for (const result of response['messages']['matches']) {
-        for (const attachment of result['attachments']) {
-          var video_html;
+      var total_pages = initial_response['messages']['paging']['pages']
+      var page
 
-          if (attachment['service_name'] == 'YouTube' || attachment['service_name'] == 'Vimeo') {
-            video_html = attachment['video_html'];
-          } else {
-            video_html = attachment['audio_html']; //bandcamp
+      for (page = 1; page <= total_pages; page++) {
+        console.log('processing page ', page)
+
+        response = await web.search.messages({
+          query: host + ' in:#friday-question',
+          page: page
+        });
+
+        for (const result of response['messages']['matches']) {
+          if (typeof(result['attachments']) != 'undefined') {
+            for (const attachment of result['attachments']) {
+              var video_html;
+
+              if (attachment['service_name'] == 'YouTube' || attachment['service_name'] == 'Vimeo') {
+                video_html = attachment['video_html'];
+              } else {
+                video_html = attachment['audio_html']; //bandcamp
+              }
+
+              let video = {
+                "username": '@' + result['username'],
+                "date": new Date(result['ts'] * 1000),
+                "title": attachment['title'],
+                "title_link": attachment['title_link'],
+                "video_html": video_html.replace("autoplay=1", "autoplay=0&rel=0")
+              }
+
+              results = results.concat(video);
+            }
           }
-
-          let video = {
-            "username": '@' + result['username'],
-            "date": new Date(result['ts'] * 1000),
-            "title": attachment['title'],
-            "title_link": attachment['title_link'],
-            "video_html": video_html.replace("autoplay=1", "autoplay=0&rel=0")
-          }
-
-          results = results.concat(video);
         }
       }
     }
