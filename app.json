@@ -1,0 +1,31 @@
+{
+  "name": "fq-videos",
+  "description": "",
+  "scripts": {},
+  "env": {
+    "SLACK_API_TOKEN": {
+      "required": true
+    },
+    "SLACK_API_USER_TOKEN": {
+      "required": true
+    },
+    "SLACK_CLIENT_ID": {
+      "required": true
+    },
+    "SLACK_CLIENT_SECRET": {
+      "required": true
+    },
+  }
+},
+"formation": {
+  "web": {
+    "quantity": 1
+  }
+},
+"addons": [
+
+],
+"buildpacks": [{
+  "url": "heroku/nodejs"
+}]
+}
