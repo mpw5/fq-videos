@@ -41,7 +41,6 @@ router.get('/', (req, res) => {
     var results = [];
 
     for (const host of video_hosting_array) {
-
       initial_response = await web.search.messages({
         query: host + ' in:#friday-question',
         count: 1
