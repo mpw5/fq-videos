@@ -69,15 +69,17 @@ router.get('/', (req, res) => {
                 video_html = attachment['audio_html']; //bandcamp
               }
 
-              let video = {
-                "username": '@' + result['username'],
-                "date": new Date(result['ts'] * 1000),
-                "title": attachment['title'],
-                "title_link": attachment['title_link'],
-                "video_html": video_html.replace("autoplay=1", "autoplay=0&rel=0")
-              }
+              if (typeof(video_html) != 'undefined') {
+                let video = {
+                  "username": '@' + result['username'],
+                  "date": new Date(result['ts'] * 1000),
+                  "title": attachment['title'],
+                  "title_link": attachment['title_link'],
+                  "video_html": video_html.replace("autoplay=1", "autoplay=0&rel=0")
+                }
 
-              results = results.concat(video);
+                results = results.concat(video);
+              }
             }
           }
         }
