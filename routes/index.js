@@ -50,12 +50,15 @@ router.get('/', (req, res) => {
       var total_pages = initial_response['messages']['paging']['pages']
       var page
 
+      console.log('total records: ', initial_response['messages']['total'])
+      console.log('total pages: ', total_pages)
       for (page = 1; page <= total_pages; page++) {
         console.log('processing page ', page)
 
         response = await web.search.messages({
           query: host + ' in:#friday-question',
-          page: page
+          page: page,
+          count: 100
         });
 
         for (const result of response['messages']['matches']) {
@@ -69,15 +72,17 @@ router.get('/', (req, res) => {
                 video_html = attachment['audio_html']; //bandcamp
               }
 
-              let video = {
-                "username": '@' + result['username'],
-                "date": new Date(result['ts'] * 1000),
-                "title": attachment['title'],
-                "title_link": attachment['title_link'],
-                "video_html": video_html.replace("autoplay=1", "autoplay=0&rel=0")
-              }
+              if (typeof(video_html) != 'undefined') {
+                let video = {
+                  "username": '@' + result['username'],
+                  "date": new Date(result['ts'] * 1000),
+                  "title": attachment['title'],
+                  "title_link": attachment['title_link'],
+                  "video_html": video_html.replace("autoplay=1", "autoplay=0&rel=0")
+                }
 
-              results = results.concat(video);
+                results = results.concat(video);
+              }
             }
           }
         }
