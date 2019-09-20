@@ -95,7 +95,7 @@ async function get_results() {
 }
 
 router.get('/', (req, res) => {
-  if(typeof(sorted_results)){
+  if(typeof(sorted_results) == 'undefined'){
     res.render('error');
   } else {
     res.render('index', {
