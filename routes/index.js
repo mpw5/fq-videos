@@ -50,6 +50,8 @@ router.get('/', (req, res) => {
       var total_pages = initial_response['messages']['paging']['pages']
       var page
 
+      console.log('total records: ', initial_response['messages']['total'])
+      console.log('total pages: ', total_pages)
       for (page = 1; page <= total_pages; page++) {
         console.log('processing page ', page)
 
