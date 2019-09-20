@@ -55,7 +55,8 @@ router.get('/', (req, res) => {
 
         response = await web.search.messages({
           query: host + ' in:#friday-question',
-          page: page
+          page: page,
+          count: 100
         });
 
         for (const result of response['messages']['matches']) {
