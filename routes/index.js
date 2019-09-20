@@ -69,7 +69,7 @@ router.get('/', (req, res) => {
                 video_html = attachment['audio_html']; //bandcamp
               }
 
-              if (video_html != 'undefined') {
+              if (typeof(video_html) != 'undefined') {
                 let video = {
                   "username": '@' + result['username'],
                   "date": new Date(result['ts'] * 1000),
