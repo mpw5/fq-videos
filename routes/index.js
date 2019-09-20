@@ -82,6 +82,7 @@ async function get_results() {
               }
 
               results = results.concat(video);
+              }
             }
           }
         }
