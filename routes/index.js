@@ -44,7 +44,7 @@ router.get('/', (req, res) => {
 
       initial_response = await web.search.messages({
         query: host + ' in:#friday-question',
-        count: 1
+        count: 100
       });
 
       var total_pages = initial_response['messages']['paging']['pages']
