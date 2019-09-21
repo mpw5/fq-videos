@@ -106,7 +106,7 @@ router.get('/', (req, res) => {
 
 var schedule = require('node-schedule');
 
-schedule.scheduleJob('*/5 * * * *', function(){
+schedule.scheduleJob('*/2 * * * *', function(){
   get_results()
 });
 
