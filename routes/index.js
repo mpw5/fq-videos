@@ -1,5 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const moment = require('moment');
+const fs = require('fs');
+const schedule = require('node-schedule');
 
 const {
   WebClient
@@ -76,11 +79,11 @@ async function get_results() {
 
             if (typeof(video_html) != 'undefined') {
               let video = {
-                "username": '@' + result['username'],
-                "date": new Date(result['ts'] * 1000),
-                "title": attachment['title'],
-                "title_link": attachment['title_link'],
-                "video_html": video_html.replace("autoplay=1", "autoplay=0&rel=0")
+                username: '@' + result['username'],
+                date: moment(new Date(result['ts'] * 1000)).format('YYYY/MM/DD HH:mm:ss'),
+                title: attachment['title'],
+                title_link: attachment['title_link'],
+                video_html: video_html.replace("autoplay=1", "autoplay=0&rel=0")
               }
 
               results = results.concat(video);
@@ -92,19 +95,30 @@ async function get_results() {
   }
 
   sorted_results = results.sort(compareValues('date'));
+
+  fs.writeFile("results.txt", JSON.stringify(sorted_results), function(err) {
+    if (err) {
+      console.log(err);
+    }
+  });
 }
 
 router.get('/', (req, res) => {
-  if(typeof(sorted_results) == 'undefined'){
-    res.render('error');
-  } else {
-    res.render('index', {
-      results: sorted_results
-    });
-  }
+  res.render('index', {
+    results: sorted_results
+  });
 });
 
-var schedule = require('node-schedule');
+router.get('/results', (req, res) => {
+  fs.readFile('results.txt', 'utf8', function(err, data) {
+    if (err) {
+      console.log(err);
+    }else{
+        console.log('reading results.txt')
+        res.send({data: JSON.parse(data)});
+    }
+  });
+});
 
 schedule.scheduleJob('*/2 * * * *', function(){
   get_results()
