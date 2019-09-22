@@ -124,7 +124,11 @@ router.get('/results', (req, res) => {
   });
 });
 
+<<<<<<< HEAD
 schedule.scheduleJob('*/5 * * * *', function(){
+=======
+schedule.scheduleJob('*/10 * * * *', function(){
+>>>>>>> 3f2c8e8... increase time between api calls
   get_results()
 });
 
