@@ -17,8 +17,6 @@ async function get_results() {
   console.log('in get_results')
   const video_hosting_array = ['https://youtu', 'https://www.youtube', 'bandcamp.com', 'https://vimeo.com']
   var initial_response;
-  var response;
-  var matches;
   results = [];
 
   for (const host of video_hosting_array) {
@@ -36,7 +34,7 @@ async function get_results() {
     for (page = 1; page <= total_pages; page++) {
       console.log('processing page ', page)
 
-      response = await web.search.messages({
+      var response = await web.search.messages({
         query: host + ' in:#friday-question',
         page: page,
         count: 100
@@ -59,7 +57,7 @@ async function get_results() {
                 date: moment(new Date(result['ts'] * 1000)).format('YYYY/MM/DD HH:mm:ss'),
                 title: attachment['title'],
                 title_link: attachment['title_link'],
-                video_html: video_html.replace("autoplay=1", "autoplay=0&rel=0")
+                video_html: video_html.replace('autoplay=1', 'autoplay=0&rel=0')
               }
 
               results = results.concat(video);
@@ -70,7 +68,7 @@ async function get_results() {
     }
   }
 
-  fs.writeFile("results.txt", JSON.stringify(results), function(err) {
+  fs.writeFile('results.txt', JSON.stringify(results), function(err) {
     if (err) {
       console.log(err);
     }
@@ -94,7 +92,11 @@ router.get('/results', (req, res) => {
   });
 });
 
+<<<<<<< HEAD
 schedule.scheduleJob('*/10 * * * *', function(){
+=======
+schedule.scheduleJob('*/2 * * * *', function() {
+>>>>>>> 376bcc3... minor code tidyup
   get_results()
 });
 
