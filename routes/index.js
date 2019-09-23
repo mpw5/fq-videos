@@ -11,31 +11,7 @@ const {
 const user_token = process.env.SLACK_API_USER_TOKEN
 const web = new WebClient(user_token);
 
-var sorted_results
-
-function compareValues(key, order = 'asc') {
-  return function(a, b) {
-    if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
-      // property doesn't exist on either object
-      return 0;
-    }
-
-    const varA = (typeof a[key] === 'string') ?
-      a[key].toUpperCase() : a[key];
-    const varB = (typeof b[key] === 'string') ?
-      b[key].toUpperCase() : b[key];
-
-    let comparison = 0;
-    if (varA > varB) {
-      comparison = 1;
-    } else if (varA < varB) {
-      comparison = -1;
-    }
-    return (
-      (order == 'desc') ? (comparison * -1) : comparison
-    );
-  };
-}
+var results
 
 async function get_results() {
   console.log('in get_results')
@@ -43,7 +19,7 @@ async function get_results() {
   var initial_response;
   var response;
   var matches;
-  var results = [];
+  results = [];
 
   for (const host of video_hosting_array) {
     console.log('getting results for ', host)
@@ -94,9 +70,7 @@ async function get_results() {
     }
   }
 
-  sorted_results = results.sort(compareValues('date'));
-
-  fs.writeFile("results.txt", JSON.stringify(sorted_results), function(err) {
+  fs.writeFile("results.txt", JSON.stringify(results), function(err) {
     if (err) {
       console.log(err);
     }
@@ -104,31 +78,23 @@ async function get_results() {
 }
 
 router.get('/', (req, res) => {
-  if(typeof(sorted_results) == 'undefined'){
-    res.render('error');
-  } else {
-    res.render('index', {
-      results: sorted_results
-    });
-  }
+  res.render('index');
 });
 
 router.get('/results', (req, res) => {
   fs.readFile('results.txt', 'utf8', function(err, data) {
     if (err) {
       console.log(err);
-    }else{
-        console.log('reading results.txt')
-        res.send({data: JSON.parse(data)});
+    } else {
+      console.log('reading results.txt')
+      res.send({
+        data: JSON.parse(data)
+      });
     }
   });
 });
 
-<<<<<<< HEAD
-schedule.scheduleJob('*/5 * * * *', function(){
-=======
 schedule.scheduleJob('*/10 * * * *', function(){
->>>>>>> 3f2c8e8... increase time between api calls
   get_results()
 });
 
