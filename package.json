@@ -14,7 +14,6 @@
     "dotenv": "^8.1.0",
     "ejs": "^2.6.2",
     "express": "^4.17.1",
-    "heroku-self-ping": "^2.0.0",
     "jquery": "^3.4.1",
     "moment": "^2.24.0",
     "newrelic": "^5.11.0",
