@@ -1,5 +1,4 @@
 require ('newrelic');
-// require('heroku-self-ping')("https://every-friday-question-video.herokuapp.com/");
 const express = require('express');
 const routes = require('./routes/index');
 const app = express();

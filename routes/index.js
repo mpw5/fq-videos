@@ -93,12 +93,7 @@ router.get('/results', (req, res) => {
 });
 
 schedule.scheduleJob('*/10 * * * *', function() {
-  router.get("https://every-friday-question-video.herokuapp.com/");
   get_results()
 });
-
-// setInterval(function() {
-//     router.get("https://every-friday-question-video.herokuapp.com/");
-// }, 300000);
 
 module.exports = router;
