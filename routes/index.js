@@ -92,7 +92,7 @@ router.get('/results', (req, res) => {
   });
 });
 
-schedule.scheduleJob('*/2 * * * *', function() {
+schedule.scheduleJob('*/10 * * * *', function() {
   get_results()
 });
 
