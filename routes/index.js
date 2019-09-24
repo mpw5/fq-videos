@@ -92,11 +92,7 @@ router.get('/results', (req, res) => {
   });
 });
 
-<<<<<<< HEAD
-schedule.scheduleJob('*/10 * * * *', function(){
-=======
-schedule.scheduleJob('*/2 * * * *', function() {
->>>>>>> 376bcc3... minor code tidyup
+schedule.scheduleJob('*/10 * * * *', function() {
   get_results()
 });
 
