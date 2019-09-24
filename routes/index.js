@@ -15,7 +15,7 @@ var results
 
 async function get_results() {
   console.log('in get_results')
-  const video_hosting_array = ['https://youtu', 'https://www.youtube', 'bandcamp.com', 'https://vimeo.com']
+  const video_hosting_array = ['https://youtu.be/x-XCY4FhpWQ', 'https://youtu', 'https://www.youtube', 'bandcamp.com', 'https://vimeo.com']
   var initial_response;
   results = [];
 
