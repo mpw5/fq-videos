@@ -17,7 +17,7 @@
     "express": "^4.17.2",
     "jquery": "^3.6.0",
     "moment": "^2.29.1",
-    "newrelic": "^8.7.0",
+    "newrelic": "^8.7.1",
     "node-schedule": "^2.1.0"
   },
   "license": "MIT"
