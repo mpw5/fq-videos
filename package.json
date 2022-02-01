@@ -12,7 +12,7 @@
   "dependencies": {
     "@slack/client": "^5.0.2",
     "axios": "^0.24.0",
-    "dotenv": "^14.2.0",
+    "dotenv": "^15.0.0",
     "ejs": "^3.1.6",
     "express": "^4.17.2",
     "jquery": "^3.6.0",
