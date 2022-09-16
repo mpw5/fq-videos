@@ -2,7 +2,7 @@
   "name": "fqvideos",
   "version": "1.0.0",
   "engines": {
-    "node": "10.16.2"
+    "node": "16.16.0"
   },
   "description": "Process Friday Question Videos",
   "scripts": {
